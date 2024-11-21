@@ -1,7 +1,9 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from common.utils import phone_regex
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -9,7 +11,6 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-
 
 
 class Settings(BaseModel):
@@ -20,11 +21,11 @@ class Settings(BaseModel):
     youtube_link = models.URLField()
 
     def __str__(self):
-        return f'Settings RT Holding Company'
+        return _('Settings RT Holding Company')
 
     class Meta:
-        verbose_name = 'Settings'
-        verbose_name_plural = 'Settings'
+        verbose_name = _('Settings')
+        verbose_name_plural = _('Settings')
 
 
 class ContactPhoneNumber(BaseModel):
@@ -35,19 +36,19 @@ class ContactPhoneNumber(BaseModel):
         return self.phone_number
 
     class Meta:
-        verbose_name = 'Contact Phone Number'
-        verbose_name_plural = 'Contact Phone Number'
+        verbose_name = _('Contact Phone Number')
+        verbose_name_plural = _('Contact Phone Numbers')
 
 
 class Banner(BaseModel):
     class Type(models.TextChoices):
-        home_page = 'Home Page'
-        about_us = 'About Us'
-        projects = 'Projects'
-        news = 'News'
-        sale = 'Sale'
-        contact_us = 'Contact Us'
-        our_services = 'Our Services'
+        home_page = _('Home Page')
+        about_us = _('About Us')
+        projects = _('Projects')
+        news = _('News')
+        sale = _('Sale')
+        contact_us = _('Contact Us')
+        our_services = _('Our Services')
 
     banner = models.ImageField(upload_to='common/banner/banner/')
     title = models.CharField(max_length=100)
@@ -58,8 +59,8 @@ class Banner(BaseModel):
         return f'{self.title} - {self.type}'
 
     class Meta:
-        verbose_name = 'Banner'
-        verbose_name_plural = 'Banners'
+        verbose_name = _('Banner')
+        verbose_name_plural = _('Banners')
 
 
 class Service(BaseModel):
@@ -71,8 +72,8 @@ class Service(BaseModel):
         return self.title
 
     class Meta:
-        verbose_name = 'Service'
-        verbose_name_plural = 'Services'
+        verbose_name = _('Service')
+        verbose_name_plural = _('Services')
 
 
 class Project(BaseModel):
@@ -86,8 +87,8 @@ class Project(BaseModel):
         return f'{self.name} - {self.service.title}'
 
     class Meta:
-        verbose_name = 'Portfolio'
-        verbose_name_plural = 'Portfolio'
+        verbose_name = _('Portfolio')
+        verbose_name_plural = _('Portfolios')
 
 
 class ProjectBanner(BaseModel):
@@ -100,9 +101,10 @@ class ProjectBanner(BaseModel):
         return self.title
 
     class Meta:
-        verbose_name = 'Project Banner'
-        verbose_name_plural = 'Project Banner'
+        verbose_name = _('Project Banner')
+        verbose_name_plural = _('Project Banners')
         unique_together = (('project', 'title'),)
+
 
 class News(BaseModel):
     title = models.CharField(max_length=100)
@@ -113,8 +115,8 @@ class News(BaseModel):
         return self.title
 
     class Meta:
-        verbose_name = 'News'
-        verbose_name_plural = 'News'
+        verbose_name = _('News')
+        verbose_name_plural = _('News')
 
 
 class CustomerFeedback(BaseModel):
@@ -128,8 +130,8 @@ class CustomerFeedback(BaseModel):
         return f'{self.user_full_name} - {self.user_feedback}'
 
     class Meta:
-        verbose_name = 'Customer Feedback'
-        verbose_name_plural = 'Customer Feedback'
+        verbose_name = _('Customer Feedback')
+        verbose_name_plural = _('Customer Feedbacks')
 
 
 class UserContactApplication(BaseModel):
@@ -144,8 +146,8 @@ class UserContactApplication(BaseModel):
         return f'{self.name} - {self.email}'
 
     class Meta:
-        verbose_name = 'Contact Application'
-        verbose_name_plural = 'Contact Application'
+        verbose_name = _('Contact Application')
+        verbose_name_plural = _('Contact Applications')
         ordering = ['is_contacted']
 
 
@@ -158,8 +160,8 @@ class Product(BaseModel):
         return self.name
 
     class Meta:
-        verbose_name = 'Product'
-        verbose_name_plural = 'Products'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
 
 
 class ProductMedia(BaseModel):
@@ -179,8 +181,8 @@ class OurInfo(BaseModel):
         return self.title
 
     class Meta:
-        verbose_name = 'Our Info'
-        verbose_name_plural = 'Our Info'
+        verbose_name = _('Our Info')
+        verbose_name_plural = _('Our Info')
 
 
 class InfoCompany(BaseModel):
@@ -195,5 +197,5 @@ class InfoCompany(BaseModel):
         return f'{self.title}'
 
     class Meta:
-        verbose_name = 'Info Company'
-        verbose_name_plural = 'Info Company'
+        verbose_name = _('Info Company')
+        verbose_name_plural = _('Info Companies')

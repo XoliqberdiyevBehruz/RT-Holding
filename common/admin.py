@@ -1,12 +1,16 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Group
+from modeltranslation.admin import TranslationStackedInline
 
 from common import models
 
+admin.site.unregister(Group)
 
-class ProjectBannerInline(admin.StackedInline):
+class ProjectBannerInline(TranslationStackedInline):
     model = models.ProjectBanner
     extra = 0
+
 
     def has_add_permission(self, request, obj=None):
         try:
@@ -103,10 +107,10 @@ class ProductMediaInline(admin.StackedInline):
 class ProductAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('main_image',)}),
-        ("Uzbek tilida", {'fields': ('name_uz', 'description_uz')}),
-        ("Ingliz tilida", {'fields': ('name_en', 'description_en')}),
-        ("Rus tilida", {'fields': ('name_ru', 'description_ru')}),
-        ("Kores tilida", {'fields': ('name_ko', 'description_ko')}),
+        (_("Uzbek tilida"), {'fields': ('name_uz', 'description_uz')}),
+        (_("Ingliz tilida"), {'fields': ('name_en', 'description_en')}),
+        (_("Rus tilida"), {'fields': ('name_ru', 'description_ru')}),
+        (_("Kores tilida"), {'fields': ('name_ko', 'description_ko')}),
     )
     inlines = [ProductMediaInline]
     list_display = ['id', 'name']
@@ -117,10 +121,10 @@ class ProductAdmin(admin.ModelAdmin):
 class OurInfoAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('banner', 'image1', 'image2', 'image3')}),
-        ("Uzbek tilida", {'fields': ('title_uz', 'text_uz')}),
-        ("Ingliz tilida", {'fields': ('title_en', 'text_en')}),
-        ("Rus tilida", {'fields': ('title_ru', 'text_ru')}),
-        ("Kores tilida", {'fields': ('title_ko', 'text_ko')}),
+        (_("Uzbek tilida"), {'fields': ('title_uz', 'text_uz')}),
+        (_("Ingliz tilida"), {'fields': ('title_en', 'text_en')}),
+        (_("Rus tilida"), {'fields': ('title_ru', 'text_ru')}),
+        (_("Kores tilida"), {'fields': ('title_ko', 'text_ko')}),
     )
 
 
@@ -128,10 +132,10 @@ class OurInfoAdmin(admin.ModelAdmin):
 class InfoCompanyAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('image', 'project_count', 'customers_count', 'grateful_customers_count')}),
-        ("Uzbek tilida", {'fields': ('title_uz', 'description_uz')}),
-        ("Ingliz tilida", {'fields': ('title_en', 'description_en')}),
-        ("Rus tilida", {'fields': ('title_ru', 'description_ru')}),
-        ("Kores tilida", {'fields': ('title_ko', 'description_ko')}),
+        (_("Uzbek tilida"), {'fields': ('title_uz', 'description_uz')}),
+        (_("Ingliz tilida"), {'fields': ('title_en', 'description_en')}),
+        (_("Rus tilida"), {'fields': ('title_ru', 'description_ru')}),
+        (_("Kores tilida"), {'fields': ('title_ko', 'description_ko')}),
     )
 
 

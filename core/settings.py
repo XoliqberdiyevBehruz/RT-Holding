@@ -197,3 +197,28 @@ LANGUAGES = (
     ('ru', 'Russian'),
     ('ko', 'Korean'),
 )
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale'
+]
+
+CSRF_ALLOWED_ALL = True
+
+BASE_URL = env('BASE_URL')
+CSRF_TRUSTED_ORIGINS = [BASE_URL]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ["*"]
+CORS_ALLOW_HEADERS = ["*"]
+
+
+# Django Redis Config
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

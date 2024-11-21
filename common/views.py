@@ -1,31 +1,33 @@
+from django.conf import settings
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, views
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
-from common import models, serializers, filters
+from common import models, serializers, filters, throtling
 
 
 class SettingsApiView(views.APIView):
     def get(self, request):
-        settings = models.Settings.objects.all().first()
+        settings = models.Settings.objects.only('id', 'email', 'instagram_link', 'telegram_link', 'facebook_link','youtube_link').first()
         serializer = serializers.SettingsSerializer(settings)
         return Response(serializer.data)
 
 
 class BannerListApiView(views.APIView):
     def get(self, request):
-        banners = models.Banner.objects.all()
+        banners = models.Banner.objects.only('id', 'title', 'description', 'banner', 'type')
         serializer = serializers.BannerListSerializer(banners, many=True)
         return Response(serializer.data)
 
 
 class ServiceListApiView(views.APIView):
     def get(self, request):
-        services = models.Service.objects.all()
+        services = models.Service.objects.only('id', 'title', 'description', 'image')
         serializer = serializers.ServiceListSerializer(services, many=True)
         return Response(serializer.data)
+
 
 class ServiceDetailApiView(views.APIView):
     def get(self, request, pk):
@@ -33,7 +35,7 @@ class ServiceDetailApiView(views.APIView):
             service = models.Service.objects.get(pk=pk)
         except models.Service.DoesNotExist:
             return Response('Service not found')
-        projects = models.Project.objects.filter(service=service)
+        projects = models.Project.objects.only('id', 'name', 'image', 'link', 'service').filter(service=service)
         data = {
             'id': service.id,
             'title': service.title,
@@ -53,7 +55,7 @@ class ProjectCategoryListApiView(views.APIView):
 
 class ProjectListApiView(views.APIView):
     def get(self, request):
-        projects = models.Project.objects.all()
+        projects = models.Project.objects.only('id', 'name', 'image', 'link', 'service')
         serializer = serializers.ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
@@ -67,7 +69,7 @@ class ProjectDetailApiView(views.APIView):
 
 class NewsListApiView(views.APIView):
     def get(self, request):
-        news = models.News.objects.all()
+        news = models.News.objects.only('id', 'title', 'description', 'image')
         serializer = serializers.NewsSerializer(news, many=True)
         return Response(serializer.data)
 
@@ -90,6 +92,10 @@ class ContactUsCreateApiView(generics.CreateAPIView):
     queryset = models.UserContactApplication
     serializer_class = serializers.UserContactApplicationCreateSerializer
     parser_classes = (MultiPartParser, FormParser)
+    throttle_classes = [
+        throtling.CreateUserContactApplicationIPThrottle,
+        throtling.CreateUserContactApplicationPhoneThrottle,
+    ]
 
 
 class ProductListApiView(generics.ListAPIView):

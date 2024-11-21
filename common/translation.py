@@ -21,6 +21,12 @@ class ProjectTranslationOptions(TranslationOptions):
     fields = ['name', 'description']
 
 
+@register(models.ProjectBanner)
+class ProjectTranslationOptions(TranslationOptions):
+    model = models.Project
+    fields = ['title', 'description']
+
+
 @register(models.News)
 class NewsTranslationOptions(TranslationOptions):
     model = models.News
