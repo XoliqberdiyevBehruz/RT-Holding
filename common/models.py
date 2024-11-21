@@ -11,10 +11,9 @@ class BaseModel(models.Model):
         abstract = True
 
 
+
 class Settings(BaseModel):
     email = models.EmailField()
-    contact_phone_number = models.CharField(max_length=15, validators=[phone_regex])
-    contact_phone_number2 = models.CharField(max_length=15, validators=[phone_regex])
     instagram_link = models.URLField()
     facebook_link = models.URLField()
     telegram_link = models.URLField()
@@ -28,6 +27,18 @@ class Settings(BaseModel):
         verbose_name_plural = 'Settings'
 
 
+class ContactPhoneNumber(BaseModel):
+    phone_number = models.CharField(max_length=15, validators=[phone_regex])
+    settings = models.ForeignKey(Settings, on_delete=models.CASCADE, related_name='contact_phone_numbers')
+
+    def __str__(self):
+        return self.phone_number
+
+    class Meta:
+        verbose_name = 'Contact Phone Number'
+        verbose_name_plural = 'Contact Phone Number'
+
+
 class Banner(BaseModel):
     class Type(models.TextChoices):
         home_page = 'Home Page'
@@ -36,6 +47,7 @@ class Banner(BaseModel):
         news = 'News'
         sale = 'Sale'
         contact_us = 'Contact Us'
+        our_services = 'Our Services'
 
     banner = models.ImageField(upload_to='common/banner/banner/')
     title = models.CharField(max_length=100)
@@ -63,30 +75,34 @@ class Service(BaseModel):
         verbose_name_plural = 'Services'
 
 
-class ProjectCategory(BaseModel):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Portfolio Category'
-        verbose_name_plural = 'Portfolio Categories'
-
-
 class Project(BaseModel):
     image = models.ImageField(upload_to='common/product/images/')
-    category = models.ForeignKey(ProjectCategory, on_delete=models.CASCADE, related_name='portfolios')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='portfolios')
     name = models.CharField(max_length=100)
-    link = models.URLField()
+    link = models.URLField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.category.name
+        return f'{self.name} - {self.service.title}'
 
     class Meta:
         verbose_name = 'Portfolio'
         verbose_name_plural = 'Portfolio'
 
+
+class ProjectBanner(BaseModel):
+    banner = models.ImageField(upload_to='common/project/banner/images/')
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='projects')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Project Banner'
+        verbose_name_plural = 'Project Banner'
+        unique_together = (('project', 'title'),)
 
 class News(BaseModel):
     title = models.CharField(max_length=100)
@@ -136,7 +152,7 @@ class UserContactApplication(BaseModel):
 class Product(BaseModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='common/product/images/')
+    main_image = models.ImageField(upload_to='common/product/main-image/')
 
     def __str__(self):
         return self.name
@@ -144,3 +160,40 @@ class Product(BaseModel):
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+
+
+class ProductMedia(BaseModel):
+    image = models.ImageField(upload_to='common/product-media/images/')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_media')
+
+
+class OurInfo(BaseModel):
+    title = models.CharField(max_length=100)
+    text = models.TextField()
+    banner = models.ImageField(upload_to='common/product/banner/images/')
+    image1 = models.ImageField(upload_to='common/product/images/')
+    image2 = models.ImageField(upload_to='common/product/images/')
+    image3 = models.ImageField(upload_to='common/product/images/')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Our Info'
+        verbose_name_plural = 'Our Info'
+
+
+class InfoCompany(BaseModel):
+    image = models.ImageField(upload_to='common/info-company/images/')
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    project_count = models.PositiveBigIntegerField(default=0)
+    customers_count = models.PositiveBigIntegerField(default=0)
+    grateful_customers_count = models.PositiveBigIntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.title}'
+
+    class Meta:
+        verbose_name = 'Info Company'
+        verbose_name_plural = 'Info Company'
